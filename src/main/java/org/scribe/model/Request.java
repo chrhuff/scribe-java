@@ -10,7 +10,7 @@ import org.scribe.exceptions.*;
 
 /**
  * Represents an HTTP Request object
- * 
+ *
  * @author Pablo Fernandez
  */
 class Request
@@ -34,7 +34,7 @@ class Request
 
   /**
    * Creates a new Http Request
-   * 
+   *
    * @param verb Http Verb (GET, POST, etc)
    * @param url url with optional querystring parameters.
    */
@@ -49,7 +49,7 @@ class Request
 
   /**
    * Execute the request and return a {@link Response}
-   * 
+   *
    * @return Http Response
    * @throws RuntimeException
    *           if the connection cannot be created.
@@ -84,13 +84,21 @@ class Request
    */
   public String getCompleteUrl()
   {
-    return querystringParams.appendTo(url);
+      switch ( getVerb() )
+      {
+          case GET:
+              return querystringParams.appendTo(url);
+
+          case POST:
+          default:
+              return url;
+      }
   }
 
   Response doSend() throws IOException
   {
     connection.setRequestMethod(this.verb.name());
-    if (connectTimeout != null) 
+    if (connectTimeout != null)
     {
       connection.setConnectTimeout(connectTimeout.intValue());
     }
@@ -122,12 +130,18 @@ class Request
       conn.setRequestProperty(CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
     }
     conn.setDoOutput(true);
-    conn.getOutputStream().write(content);
+    conn.getOutputStream().write( content );
+    if ( getVerb().equals( Verb.POST ) )
+    {
+       OutputStreamWriter wr = new OutputStreamWriter( conn.getOutputStream() );
+       wr.write( querystringParams.asFormUrlEncodedString() );
+       wr.flush();
+    }
   }
 
   /**
    * Add an HTTP Header to the Request
-   * 
+   *
    * @param key the header name
    * @param value the header value
    */
@@ -138,7 +152,7 @@ class Request
 
   /**
    * Add a body Parameter (for POST/ PUT Requests)
-   * 
+   *
    * @param key the parameter name
    * @param value the parameter value
    */
@@ -160,12 +174,12 @@ class Request
 
   /**
    * Add body payload.
-   * 
+   *
    * This method is used when the HTTP body is not a form-url-encoded string,
    * but another thing. Like for example XML.
-   * 
+   *
    * Note: The contents are not part of the OAuth signature
-   * 
+   *
    * @param payload the body of the request
    */
   public void addPayload(String payload)
@@ -185,7 +199,7 @@ class Request
 
   /**
    * Get a {@link ParameterList} with the query string parameters.
-   * 
+   *
    * @return a {@link ParameterList} containing the query string parameters.
    * @throws OAuthException if the request URL is not valid.
    */
@@ -207,7 +221,7 @@ class Request
 
   /**
    * Obtains a {@link ParameterList} of the body parameters.
-   * 
+   *
    * @return a {@link ParameterList}containing the body parameters.
    */
   public ParameterList getBodyParams()
@@ -217,7 +231,7 @@ class Request
 
   /**
    * Obtains the URL of the HTTP Request.
-   * 
+   *
    * @return the original URL of the HTTP Request
    */
   public String getUrl()
@@ -227,7 +241,7 @@ class Request
 
   /**
    * Returns the URL without the port and the query string part.
-   * 
+   *
    * @return the OAuth-sanitized URL
    */
   public String getSanitizedUrl()
@@ -237,7 +251,7 @@ class Request
 
   /**
    * Returns the body of the request
-   * 
+   *
    * @return form encoded string
    * @throws OAuthException if the charset chosen is not supported
    */
@@ -269,17 +283,17 @@ class Request
 
   /**
    * Returns the HTTP Verb
-   * 
+   *
    * @return the verb
    */
   public Verb getVerb()
   {
     return verb;
   }
-  
+
   /**
    * Returns the connection headers as a {@link Map}
-   * 
+   *
    * @return map of headers
    */
   public Map<String, String> getHeaders()
@@ -299,9 +313,9 @@ class Request
 
   /**
    * Sets the connect timeout for the underlying {@link HttpURLConnection}
-   * 
+   *
    * @param duration duration of the timeout
-   * 
+   *
    * @param unit unit of time (milliseconds, seconds, etc)
    */
   public void setConnectTimeout(int duration, TimeUnit unit)
@@ -311,9 +325,9 @@ class Request
 
   /**
    * Sets the read timeout for the underlying {@link HttpURLConnection}
-   * 
+   *
    * @param duration duration of the timeout
-   * 
+   *
    * @param unit unit of time (milliseconds, seconds, etc)
    */
   public void setReadTimeout(int duration, TimeUnit unit)

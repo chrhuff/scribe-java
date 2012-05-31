@@ -1,18 +1,18 @@
 package org.scribe.oauth;
 
-import org.scribe.builder.api.*;
+import org.scribe.builder.api.DefaultApi20;
 import org.scribe.model.*;
 
 public class OAuth20ServiceImpl implements OAuthService
 {
   private static final String VERSION = "2.0";
-  
+
   private final DefaultApi20 api;
   private final OAuthConfig config;
-  
+
   /**
    * Default constructor
-   * 
+   *
    * @param api OAuth2.0 api information
    * @param config OAuth 2.0 configuration param object
    */
@@ -32,7 +32,29 @@ public class OAuth20ServiceImpl implements OAuthService
     request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
     request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());
     request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
-    if(config.hasScope()) request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
+    if (config.hasScope()) request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
+    Response response = request.send();
+    return api.getAccessTokenExtractor().extract(response.getBody());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Token refreshAccessToken(Token accessToken)
+  {
+
+    String accessTokenEndpoint = api.getAccessTokenEndpoint();
+    if (accessTokenEndpoint.contains("?grant_type="))
+    {
+      // handle the ugly case where the grant_type parameter is already hardcoded in the constant url
+      accessTokenEndpoint = accessTokenEndpoint.substring(0, accessTokenEndpoint.indexOf("?"));
+    }
+    OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), accessTokenEndpoint);
+    request.addQuerystringParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
+    request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
+    request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
+    request.addQuerystringParameter(OAuthConstants.GRANT_TYPE, api.getRefreshTokenParameterName());
+    request.addQuerystringParameter(api.getRefreshTokenParameterName(), accessToken.getToken());
     Response response = request.send();
     return api.getAccessTokenExtractor().extract(response.getBody());
   }
