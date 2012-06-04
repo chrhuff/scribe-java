@@ -7,54 +7,68 @@ import java.io.Serializable;
  * 
  * @author Pablo Fernandez
  */
-public class Token implements Serializable
-{
+public class Token implements Serializable {
   private static final long serialVersionUID = 715000866082812683L;
-	
-  private final String token;
-  private final String secret;
-  private final String rawResponse;
+
+  private final String      token;
+  private final String      secret;
+  private final String      rawResponse;
+  private Token             refreshToken     = null;
+  private int               expiresIn        = 0;
 
   /**
    * Default constructor
    * 
-   * @param token token value
-   * @param secret token secret
+   * @param token
+   *          token value
+   * @param secret
+   *          token secret
    */
-  public Token(String token, String secret)
-  {
+  public Token(String token, String secret) {
     this(token, secret, null);
   }
 
-  public Token(String token, String secret, String rawResponse)
-  {
+  public Token(String token, String secret, String rawResponse) {
     this.token = token;
     this.secret = secret;
     this.rawResponse = rawResponse;
   }
 
-  public String getToken()
-  {
+  public Token(String token, String secret, String rawResponse, Token refreshToken, int expiresIn) {
+    this(token, secret, rawResponse);
+    this.refreshToken = refreshToken;
+    this.expiresIn = expiresIn;
+  }
+
+  public String getToken() {
     return token;
   }
 
-  public String getSecret()
-  {
+  public String getSecret() {
     return secret;
   }
 
-  public String getRawResponse()
-  {
-    if (rawResponse == null)
-    {
+  public String getRawResponse() {
+    if (rawResponse == null) {
       throw new IllegalStateException("This token object was not constructed by scribe and does not have a rawResponse");
     }
     return rawResponse;
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     return String.format("Token[%s , %s]", token, secret);
+  }
+
+  public Token getRefreshToken() {
+    return refreshToken;
+  }
+  
+  public int getExpiresIn() {
+    return expiresIn;
+  }
+  
+  public void setExpiresIn(int expiresIn) {
+    this.expiresIn = expiresIn;
   }
 }
