@@ -98,6 +98,11 @@ public class OAuth10aServiceImpl implements OAuthService
     config.log("signing request: " + request.getCompleteUrl());
     request.addOAuthParameter(OAuthConstants.TOKEN, token.getToken());
 
+    // Do not append the token if empty. This is for two legged OAuth calls.
+    if (!token.isEmpty())
+    {
+      request.addOAuthParameter(OAuthConstants.TOKEN, token.getToken());
+    }
     config.log("setting token to: " + token);
     addOAuthParams(request, token);
     appendSignature(request);
