@@ -8,7 +8,7 @@ import org.scribe.utils.*;
 
 /**
  * OAuth 1.0a implementation of {@link OAuthService}
- * 
+ *
  * @author Pablo Fernandez
  */
 public class OAuth10aServiceImpl implements OAuthService
@@ -20,7 +20,7 @@ public class OAuth10aServiceImpl implements OAuthService
 
   /**
    * Default constructor
-   * 
+   *
    * @param api OAuth1.0a api information
    * @param config OAuth 1.0a configuration param object
    */
@@ -96,7 +96,6 @@ public class OAuth10aServiceImpl implements OAuthService
   public void signRequest(Token token, OAuthRequest request)
   {
     config.log("signing request: " + request.getCompleteUrl());
-    request.addOAuthParameter(OAuthConstants.TOKEN, token.getToken());
 
     // Do not append the token if empty. This is for two legged OAuth calls.
     if (!token.isEmpty())
@@ -123,7 +122,7 @@ public class OAuth10aServiceImpl implements OAuthService
   {
     return api.getAuthorizationUrl(requestToken);
   }
-  
+
   private String getSignature(OAuthRequest request, Token token)
   {
     config.log("generating signature...");
