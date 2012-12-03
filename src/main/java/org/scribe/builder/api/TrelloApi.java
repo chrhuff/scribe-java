@@ -2,20 +2,20 @@ package org.scribe.builder.api;
 
 import org.scribe.model.*;
 
-public class LinkedInApi extends DefaultApi10a
+public class TrelloApi extends DefaultApi10a
 {
-  private static final String AUTHORIZE_URL = "https://api.linkedin.com/uas/oauth/authenticate?oauth_token=%s";
+  private static final String AUTHORIZE_URL = "https://trello.com/1/OAuthAuthorizeToken?oauth_token=%s";
 
   @Override
   public String getAccessTokenEndpoint()
   {
-    return "https://api.linkedin.com/uas/oauth/accessToken";
+    return "https://trello.com/1/OAuthGetAccessToken";
   }
 
   @Override
   public String getRequestTokenEndpoint()
   {
-    return "https://api.linkedin.com/uas/oauth/requestToken";
+    return "https://trello.com/1/OAuthGetRequestToken";
   }
   
   @Override
