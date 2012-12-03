@@ -3,12 +3,12 @@ package org.scribe.builder.api;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.scribe.exceptions.OAuthException;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.extractors.TokenExtractor20Impl;
-import org.scribe.model.*;
-
-import org.scribe.utils.*;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.Token;
+import org.scribe.utils.OAuthEncoder;
+import org.scribe.utils.Preconditions;
 
 public class FacebookApi extends DefaultApi20 {
   private static final String AUTHORIZE_URL        = "https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s";
@@ -26,9 +26,6 @@ public class FacebookApi extends DefaultApi20 {
       if (matcher.find()) {
         int expires = Integer.valueOf(OAuthEncoder.decode(matcher.group(1)));
         token.setExpiresIn(expires);
-      } else {
-        throw new OAuthException("Response body is incorrect. Can't extract a token from this: '" + response + "'",
-            null);
       }
 
       return token;
