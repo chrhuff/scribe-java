@@ -5,7 +5,7 @@ import org.scribe.utils.*;
 
 /**
  * Represents an OAuth token (either request or access token) and its secret
- * 
+ *
  * @author Pablo Fernandez
  */
 public class Token implements Serializable {

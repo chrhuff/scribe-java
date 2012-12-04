@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * OAuth 1.0a implementation of {@link OAuthService}
- * 
+ *
  * @author Pablo Fernandez
  */
 public class OAuth10aServiceImpl implements OAuthService {
