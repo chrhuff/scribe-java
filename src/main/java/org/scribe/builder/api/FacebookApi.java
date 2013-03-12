@@ -14,7 +14,7 @@ public class FacebookApi extends DefaultApi20 {
   private static final String AUTHORIZE_URL        = "https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s";
   private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
 
-  private class FacebookTokenExtractor extends TokenExtractor20Impl {
+  private static class FacebookTokenExtractor extends TokenExtractor20Impl {
 
     private static final String TOKEN_REGEX = "expires=([0-9]+)";
 
