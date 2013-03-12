@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.scribe.builder.api.*;
 import org.scribe.model.*;
+import org.scribe.services.*;
 import org.scribe.utils.*;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +13,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Pablo Fernandez
  */
-public class OAuth10aServiceImpl implements OAuthService {
+public class OAuth10aServiceImpl implements OAuthService
+{
 	private static final String VERSION = "1.0";
 
 	private OAuthConfig config;
@@ -140,16 +142,17 @@ public class OAuth10aServiceImpl implements OAuthService {
 		return api.getAuthorizationUrl(requestToken);
 	}
 
-	private String getSignature(OAuthRequest request, Token token) {
-		config.log("generating signature...");
-		String baseString = api.getBaseStringExtractor().extract(request);
-		String signature = api.getSignatureService().getSignature(baseString,
-				config.getApiSecret(), token.getSecret());
+  private String getSignature(OAuthRequest request, Token token)
+  {
+    config.log("generating signature...");
+    config.log("using base64 encoder: " + Base64Encoder.type());
+    String baseString = api.getBaseStringExtractor().extract(request);
+    String signature = api.getSignatureService().getSignature(baseString, config.getApiSecret(), token.getSecret());
 
-		config.log("base string is: " + baseString);
-		config.log("signature is: " + signature);
-		return signature;
-	}
+    config.log("base string is: " + baseString);
+    config.log("signature is: " + signature);
+    return signature;
+  }
 
 	private void appendSignature(OAuthRequest request) {
 		switch (config.getSignatureType()) {
